@@ -1,1 +1,1 @@
-# EPA Geolocated Photograph Log
+# EPA Geolocated Photograph Log Desktop GUI
