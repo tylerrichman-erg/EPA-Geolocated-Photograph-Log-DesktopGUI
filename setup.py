@@ -33,7 +33,9 @@ if __name__ == "__main__":
     ### All Python libraries used in tool need to be included below ###
     subprocess.run([activate_venv_command, "&&", python_exe_location, pip_exe_location, "install", "geopandas=1.0.1"], check=True)
     subprocess.run([activate_venv_command, "&&", python_exe_location, pip_exe_location, "install", "tk"], check=True)
+    subprocess.run([activate_venv_command, "&&", python_exe_location, pip_exe_location, "install", "folium"], check=True)
     subprocess.run([activate_venv_command, "&&", python_exe_location, pip_exe_location, "install", "pillow"], check=True)
+    subprocess.run([activate_venv_command, "&&", python_exe_location, pip_exe_location, "install", "selenium"], check=True)
     subprocess.run([activate_venv_command, "&&", python_exe_location, pip_exe_location, "install", "pyinstaller"], check=True)
 
     subprocess.run([activate_venv_command, "&&", "CD", main_exe_folder_location, "&&", pyinstaller_exe_location, "--onefile", f"--icon={icon_location}",main_py_location], check=True)
