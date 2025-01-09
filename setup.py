@@ -1,13 +1,39 @@
+import configparser
 import os
 import shutil
 import subprocess
 
 class App:
     def __init__(self):
-        self.workspace_folder = r""
+        self.workspace_folder_path = r""
+        self.config_file_path = r""
+
+class Config:
+    def __init__(self, config):
+        ### Image Properties ###
+        self.img_width = config['Image Properties']['width']
+        self.img_height = config['Image Properties']['height']
+
+        ### Map Properties ###
+        self.map_control_scale = config['Map Properties']['control_scale']
+        self.map_zoom_control = config['Map Properties']['zoom_control']
+        self.map_dragging = config['Map Properties']['dragging']
+
+        ### Icon Properties ###
+        self.icon_name = config['Icon Properties']['name']
+        self.icon_size = config['Icon Properties']['size']
+        self.icon_shape = config['Icon Properties']['shape']
+        self.icon_border_color = config['Icon Properties']['border_color']
+        self.icon_border_width = config['Icon Properties']['border_width']
+        self.icon_background_color = config['Icon Properties']['background_color']
+        self.icon_text_color = config['Icon Properties']['text_color']
 
 if __name__ == "__main__":
     App = App()
+
+    config = configparser.ConfigParser()
+    config.read(App.config_file_path)
+    Config = Config(config)
 
     main_exe_folder_location = os.path.join(App.workspace_folder, r"exe")
     activate_venv_command = os.path.join(App.workspace_folder, r"python-env\Scripts\activate.bat")
