@@ -1,7 +1,7 @@
 import folium
 import folium.plugins as plugins
 
-def create_map_from_table(
+def create_maps_from_table(
     img_width,
     img_height,
     map_control_scale,
