@@ -5,11 +5,15 @@ import subprocess
 
 class App:
     def __init__(self):
-        self.workspace_folder_path = r""
+        self.workspace_path = r""
         self.config_file_path = r""
 
 class Config:
     def __init__(self, config):
+        ### Map Window Properties ###
+        self.main_window_title = config['Main Window Properties']['title']
+        self.main_window_geometry = config['Main Window Properties']['geometry']
+
         ### Image Properties ###
         self.img_width = config['Image Properties']['width']
         self.img_height = config['Image Properties']['height']
