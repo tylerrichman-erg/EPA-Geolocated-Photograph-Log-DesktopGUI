@@ -13,6 +13,8 @@ class Config:
         ### Map Window Properties ###
         self.main_window_title = config['Main Window Properties']['title']
         self.main_window_geometry = config['Main Window Properties']['geometry']
+        self.main_window_resizable_width = config['Main Window Properties']['resizable_width']
+        self.main_window_resizable_height = config['Main Window Properties']['resizable_height']
 
         ### Image Properties ###
         self.img_width = config['Image Properties']['width']

@@ -44,6 +44,10 @@ Config = setup.Config(config)
 root = tk.Tk()
 root.title(Config.main_window_title)
 root.geometry(Config.main_window_geometry)
+root.resizable(
+    width=Config.main_window_resizable_width, 
+    height=Config.main_window_resizable_height
+    )
 
 #!! Add GUI and function calls needed to run the application here.
 
