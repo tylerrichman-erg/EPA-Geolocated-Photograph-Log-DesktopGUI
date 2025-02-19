@@ -7,9 +7,42 @@ Last Update: 01/21/2025
 Description: 
 """
 
+import tkinter as tk #conda install anaconda::tk
+from tkinter import filedialog
+import piexif
+from PIL import Image
+
+def select_images_from_filedialog():
+    return filedialog.askopenfilenames()
+
+def exif_to_tag(exif_dict):
+    exif_tag_dict = {}
+    thumbnail = exif_dict.pop('thumbnail')
+    exif_tag_dict['thumbnail'] = thumbnail.decode(codec)
+
+    for ifd in exif_dict:
+        exif_tag_dict[ifd] = {}
+        for tag in exif_dict[ifd]:
+            try:
+                element = exif_dict[ifd][tag].decode(codec)
+
+            except AttributeError:
+                element = exif_dict[ifd][tag]
+
+            exif_tag_dict[ifd][piexif.TAGS[ifd][tag]["name"]] = element
+
+    return exif_tag_dict
+
+def dict_extract(inputFile):
+    im = Image.open(inputFile)
+    exif_dict = piexif.load(im.info.get('exif'))
+    exif_dict = exif_to_tag(exif_dict)
+    return(exif_dict)
+
+"""
 def file_select():
     root = tk.Tk()
-    filenames = askopenfilenames()
+    filenames = filedialog.askopenfilenames()
     root.destroy()
     return filenames
 
@@ -76,3 +109,4 @@ def exif_coordinates(inputDict):
     else:
         outputBearing = 0
     return (outputLat,outputLon,outputBearing)
+    """

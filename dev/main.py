@@ -47,7 +47,13 @@ Config = setup.Config(config)
 ### Enable helpers.py functions to work with Tkinter ###
 
 def run_open_file_dialog():
-    selected_files.set(helpers.open_file_dialog())
+    input_files = helpers.select_images_from_filedialog()
+
+    for input_file in input_files:
+        print(input_file)
+        dict_test = helpers.dict_extract(input_file)
+        print(dict_test)
+        
 
 ### Create Main Window ###
 
@@ -61,7 +67,7 @@ root.resizable(
 
 ### Add Button to Select Input Files ###   
 
-selected_files = tk.StringVar()
+#input_files = tk.StringVar()
 button = tk.Button(
     root, 
     text = "Select File", 
