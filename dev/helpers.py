@@ -13,6 +13,24 @@ def file_select():
     root.destroy()
     return filenames
 
+def exif_to_tag(exif_dict):
+    exif_tag_dict = {}
+    thumbnail = exif_dict.pop('thumbnail')
+    exif_tag_dict['thumbnail'] = thumbnail.decode(codec)
+
+    for ifd in exif_dict:
+        exif_tag_dict[ifd] = {}
+        for tag in exif_dict[ifd]:
+            try:
+                element = exif_dict[ifd][tag].decode(codec)
+
+            except AttributeError:
+                element = exif_dict[ifd][tag]
+
+            exif_tag_dict[ifd][piexif.TAGS[ifd][tag]["name"]] = element
+
+    return exif_tag_dict
+
 def dict_extract(inputFile):
     im = Image.open(inputFile)
     exif_dict = piexif.load(im.info.get('exif'))
