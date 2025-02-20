@@ -30,6 +30,9 @@ class Config:
         self.table_field_names_longitude = config['Table Field Names']['longitude']
         self.table_field_names_bearing = config['Table Field Names']['bearing']
 
+        ### Table Properties ###
+        self.table_selected_cell_bg = config['Table Properties']['selected_cell_bg']
+
         ### Image Properties ###
         self.img_width = config['Image Properties']['width']
         self.img_height = config['Image Properties']['height']
