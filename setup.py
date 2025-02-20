@@ -16,6 +16,20 @@ class Config:
         self.main_window_resizable_width = config['Main Window Properties']['resizable_width']
         self.main_window_resizable_height = config['Main Window Properties']['resizable_height']
 
+        ### Select Button Properties ###
+        self.select_button_text = config['Select Button Properties']['text']
+        self.select_button_pady = config['Select Button Properties']['pady']
+
+        ### Generate Report Button Properties ###
+        self.generate_report_button_text = config['Generate Report Button Properties']['text']
+        self.generate_report_button_pady = config['Generate Report Button Properties']['pady']
+
+        ### Table Field Names ###
+        self.table_field_names_file_name = config['Table Field Names']['file_name']
+        self.table_field_names_latitude = config['Table Field Names']['latitude']
+        self.table_field_names_longitude = config['Table Field Names']['longitude']
+        self.table_field_names_bearing = config['Table Field Names']['bearing']
+
         ### Image Properties ###
         self.img_width = config['Image Properties']['width']
         self.img_height = config['Image Properties']['height']
@@ -49,7 +63,7 @@ if __name__ == "__main__":
     main_py_location = os.path.join(App.workspace_folder, r"dev\main.py")
     icon_location = os.path.join(App.workspace_folder, r"dev\icons\icons8-f-67.png") #! Change with path of new icon.
     output_exe_location = os.path.join(App.workspace_folder, r"exe\dist\main.exe")
-    final_exe_location = os.path.join(App.workspace_folder, r"EPA Geolocated Photograph Log.exe")
+    final_exe_location = os.path.join(App.workspace_folder, r"EPA Geolocated Photograph Report Generator.exe")
 
     if os.path.exists(os.path.join(App.workspace_folder, "python-env")):
         shutil.rmtree(os.path.join(App.workspace_folder, "python-env"))

@@ -18,13 +18,13 @@ def select_images_from_filedialog():
 def exif_to_tag(exif_dict):
     exif_tag_dict = {}
     thumbnail = exif_dict.pop('thumbnail')
-    exif_tag_dict['thumbnail'] = thumbnail.decode(codec)
+    exif_tag_dict['thumbnail'] = thumbnail.decode("ISO-8859-1")
 
     for ifd in exif_dict:
         exif_tag_dict[ifd] = {}
         for tag in exif_dict[ifd]:
             try:
-                element = exif_dict[ifd][tag].decode(codec)
+                element = exif_dict[ifd][tag].decode("ISO-8859-1")
 
             except AttributeError:
                 element = exif_dict[ifd][tag]
@@ -33,49 +33,18 @@ def exif_to_tag(exif_dict):
 
     return exif_tag_dict
 
-def dict_extract(inputFile):
-    im = Image.open(inputFile)
+def extract_GPS_data_from_image(input_image_file):
+    im = Image.open(input_image_file)
     exif_dict = piexif.load(im.info.get('exif'))
-    exif_dict = exif_to_tag(exif_dict)
-    return(exif_dict)
+    image_GPS_data = exif_to_tag(exif_dict)['GPS']
+    return image_GPS_data
 
-"""
-def file_select():
-    root = tk.Tk()
-    filenames = filedialog.askopenfilenames()
-    root.destroy()
-    return filenames
+def DMS_to_DD(degree, minute, second):
+    return degree + (minute/60) + (second/3600)
 
-def exif_to_tag(exif_dict):
-    exif_tag_dict = {}
-    thumbnail = exif_dict.pop('thumbnail')
-    exif_tag_dict['thumbnail'] = thumbnail.decode(codec)
+def extract_coordinates_and_bearing_from_GPS_data(inputDict):
+    latitudes = inputDict.get("GPSLatitude")
 
-    for ifd in exif_dict:
-        exif_tag_dict[ifd] = {}
-        for tag in exif_dict[ifd]:
-            try:
-                element = exif_dict[ifd][tag].decode(codec)
-
-            except AttributeError:
-                element = exif_dict[ifd][tag]
-
-            exif_tag_dict[ifd][piexif.TAGS[ifd][tag]["name"]] = element
-
-    return exif_tag_dict
-
-def dict_extract(inputFile):
-    im = Image.open(inputFile)
-    exif_dict = piexif.load(im.info.get('exif'))
-    exif_dict = exif_to_tag(exif_dict)
-    return(exif_dict)
-
-def decimal_degree(degree, minute, second):
-    value = degree + (minute/60) + (second/3600)
-    return value
-
-def exif_coordinates(inputDict):
-    latitudes = inputDict['GPS'].get("GPSLatitude")
     if latitudes is None:
         inputLatDeg = 0
         inputLatMin = 0
@@ -84,12 +53,16 @@ def exif_coordinates(inputDict):
         inputLatDeg = latitudes[0][0]
         inputLatMin = latitudes[1][0]
         inputLatSec = latitudes[2][0]/1000
-    if inputDict['GPS'].get("GPSLatitudeRef") == 'S':
+
+    if inputDict.get("GPSLatitudeRef") == 'S':
         latHemisphere = -1
     else:
         latHemisphere = 1
-    outputLat = decimal_degree(inputLatDeg,inputLatMin,inputLatSec) *latHemisphere
-    longitudes = inputDict['GPS'].get("GPSLongitude")
+
+    outputLat = DMS_to_DD(inputLatDeg, inputLatMin, inputLatSec) * latHemisphere
+
+    longitudes = inputDict.get("GPSLongitude")
+
     if longitudes is None:
         inputLonDeg = 0
         inputLonMin = 0
@@ -98,15 +71,19 @@ def exif_coordinates(inputDict):
         inputLonDeg = longitudes[0][0]
         inputLonMin = longitudes[1][0]
         inputLonSec = longitudes[2][0]/1000
-    if inputDict['GPS'].get("GPSLongitudeRef") == 'W':
+
+    if inputDict.get("GPSLongitudeRef") == 'W':
         lonHemisphere = -1
     else:
         lonHemisphere = 1
-    outputLon = decimal_degree(inputLonDeg,inputLonMin,inputLonSec) *lonHemisphere
-    inputBearing = inputDict['GPS'].get('GPSImgDirection')
+
+    outputLon = DMS_to_DD(inputLonDeg, inputLonMin, inputLonSec) * lonHemisphere
+
+    inputBearing = inputDict.get('GPSImgDirection')
+
     if inputBearing[1] !=0:
         outputBearing = inputBearing[0]/inputBearing[1]
     else:
         outputBearing = 0
-    return (outputLat,outputLon,outputBearing)
-    """
+
+    return outputLat, outputLon, outputBearing
