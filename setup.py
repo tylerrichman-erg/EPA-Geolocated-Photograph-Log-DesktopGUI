@@ -51,6 +51,11 @@ class Config:
         self.icon_background_color = config['Icon Properties']['background_color']
         self.icon_text_color = config['Icon Properties']['text_color']
 
+        ### Document Properties ###
+        self.document_overview_title = config['Document Properties']['overview_title']
+        self.document_overview_text_rel_path = config['Document Properties']['overview_text_rel_path']
+        self.document_overview_img_width_in = config['Document Properties']['overview_img_width_in']
+
 if __name__ == "__main__":
     App = App()
 
