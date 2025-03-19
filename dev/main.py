@@ -8,16 +8,18 @@ from tkinter import ttk
 ### Initialize Pathways ###
 
 base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-setup_module_path = os.path.join(base_dir, 'setup.py')
+document_module_path = os.path.join(base_dir, 'dev', 'document.py')
 helpers_module_path = os.path.join(base_dir, 'dev', 'helpers.py')
 image_processing_module_path = os.path.join(base_dir, 'dev', 'image_processing.py')
-document_module_path = os.path.join(base_dir, 'dev', 'document.py')
+map_module_path = os.path.join(base_dir, 'dev', 'map.py')
+setup_module_path = os.path.join(base_dir, 'setup.py')
+
 
 ### Load Python Modules ###
 
-spec_setup = importlib.util.spec_from_file_location("setup", setup_module_path)
-setup = importlib.util.module_from_spec(spec_setup)
-spec_setup.loader.exec_module(setup)
+document_setup = importlib.util.spec_from_file_location("document", document_module_path)
+document = importlib.util.module_from_spec(document_setup)
+document_setup.loader.exec_module(document)
 
 helpers_setup = importlib.util.spec_from_file_location("helpers", helpers_module_path)
 helpers = importlib.util.module_from_spec(helpers_setup)
@@ -27,9 +29,13 @@ image_processing_setup = importlib.util.spec_from_file_location("image_processin
 image_processing = importlib.util.module_from_spec(image_processing_setup)
 image_processing_setup.loader.exec_module(image_processing)
 
-document_setup = importlib.util.spec_from_file_location("document", document_module_path)
-document = importlib.util.module_from_spec(document_setup)
-document_setup.loader.exec_module(document)
+map_setup = importlib.util.spec_from_file_location("map", map_module_path)
+map = importlib.util.module_from_spec(map_setup)
+map_setup.loader.exec_module(map)
+
+spec_setup = importlib.util.spec_from_file_location("setup", setup_module_path)
+setup = importlib.util.module_from_spec(spec_setup)
+spec_setup.loader.exec_module(setup)
 
 ### Initialize Application ###
 
@@ -137,7 +143,11 @@ def create_image_GPS_table():
 
 def generate_report():
 
+    ## Select Output File Location ##
+
     output_file_path = helpers.select_output_report_location_from_filedialog()
+
+    ## Update Data Frame ##
 
     global df
     updated_data = []
@@ -145,6 +155,41 @@ def generate_report():
         updated_data.append(tree.item(item, "values"))
 
     df = pd.DataFrame(updated_data, columns=columns)
+
+    ## Create Temporary Locations for Images ##
+
+    temp_image_folder_path = os.path.join(App.workspace_path, "temp")
+
+    os.makedirs(
+        temp_image_folder_path, 
+        exist_ok = True
+        )
+
+    ## Create Individual Picture Maps ##
+
+    map.generate_individual_maps(
+        df = df,
+        output_folder = temp_image_folder_path,
+        filename_field = Config.table_field_names_file_name, 
+        latitude_field = Config.table_field_names_latitude, 
+        longitude_field = Config.table_field_names_longitude, 
+        bearing_field = Config.table_field_names_bearing, 
+        zoom = Config.individual_map_zoom, 
+        img_width = Config.individual_map_width, 
+        img_height = Config.individual_map_height, 
+        map_control_scale = Config.map_control_scale, 
+        map_zoom_control = Config.map_zoom_control, 
+        map_dragging = Config.map_dragging, 
+        icon_name = Config.icon_name, 
+        icon_size = Config.icon_size, 
+        icon_shape = Config.icon_shape, 
+        icon_border_color = Config.icon_border_color, 
+        icon_border_width = Config.icon_border_width, 
+        icon_background_color = Config.icon_background_color, 
+        icon_text_color = Config.icon_text_color
+        )
+
+    ## Generate Report ##
 
     document.generate_report(
         df = df,
@@ -156,7 +201,8 @@ def generate_report():
         overview_title = Config.document_overview_title,
         overview_text = helpers.read_text_file(os.path.join(App.workspace_path, Config.document_overview_text_rel_path)),
         overview_img_path = r"C:\Users\trichman\Tyler\Tools\Development\EPA Geolocated Photograph Log Desktop GUI\Placeholder Images\Yellow0.jpg",
-        overview_img_width_in = int(Config.document_overview_img_width_in)
+        overview_img_width_in = int(Config.document_overview_img_width_in),
+        individual_image_folder_path = temp_image_folder_path
         )
 
 ### Create Buttons ###

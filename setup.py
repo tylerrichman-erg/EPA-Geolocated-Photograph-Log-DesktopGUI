@@ -42,6 +42,11 @@ class Config:
         self.map_zoom_control = config['Map Properties']['zoom_control']
         self.map_dragging = config['Map Properties']['dragging']
 
+        ### Individual Map Properties ###
+        self.individual_map_zoom = config['Individual Map Properties']['zoom']
+        self.individual_map_width = config['Individual Map Properties']['width']
+        self.individual_map_height = config['Individual Map Properties']['height']
+
         ### Icon Properties ###
         self.icon_name = config['Icon Properties']['name']
         self.icon_size = config['Icon Properties']['size']
