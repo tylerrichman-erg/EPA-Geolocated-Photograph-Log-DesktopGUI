@@ -2,6 +2,7 @@ import configparser
 import importlib.util
 import os
 import pandas as pd
+import shutil
 import tkinter as tk  # conda install anaconda::tk
 from tkinter import ttk
 
@@ -59,21 +60,56 @@ root.resizable(
     height=Config.main_window_resizable_height
 )
 
+### Create Title ###
+
+tk.Label(
+    root, 
+    text = "EPA Geolocated Photograph Log", 
+    font = ("Helvetica", 16, "bold")
+    ).pack(pady=(10, 20))
+
 ### Create Text Entry Prompts ###
 
-tk.Label(root, text="Photographer").pack(pady=0)
-photographer_entry = tk.Entry(root)
-photographer_entry.pack(pady=0)
+tk.Label(
+    root, 
+    text = "Photographer",
+    font = ("Helvetica", 11, "bold")
+    ).pack(pady = (0, 0))
+photographer_entry = tk.Entry(
+    root, 
+    width=40
+    )
+photographer_entry.pack(pady = (3, 15))
 
-tk.Label(root, text="Facility").pack(pady=0)
-facility_entry = tk.Entry(root)
-facility_entry.pack(pady=0)
+tk.Label(
+    root, 
+    text = "Facility",
+    font = ("Helvetica", 11, "bold")
+    ).pack(pady = (0, 0))
+facility_entry = tk.Entry(
+    root, 
+    width=40
+    )
+facility_entry.pack(pady = (3, 15))
 
-tk.Label(root, text="Inspection Date").pack(pady=0)
-inspection_date_entry = tk.Entry(root)
-inspection_date_entry.pack(pady=0)
+tk.Label(
+    root, 
+    text="Inspection Date",
+    font=("Helvetica", 11, "bold")
+    ).pack(pady = (0, 0))
+inspection_date_entry = tk.Entry(
+    root, 
+    width=40
+    )
+inspection_date_entry.pack(pady = (3, 15))
 
 ### Create Table ###
+
+tk.Label(
+    root, 
+    text="Photographs and GPS Data",
+    font=("Helvetica", 11, "bold")
+    ).pack(pady = (0, 0))
 
 columns = [
     Config.table_field_names_file_name, 
@@ -82,11 +118,11 @@ columns = [
     Config.table_field_names_bearing
 ]
 
-tree = ttk.Treeview(root, columns=columns, show="headings")
+tree = ttk.Treeview(root, columns=columns, show="headings", height=10)
 for col in columns:
     tree.heading(col, text=col)
     tree.column(col, width=100)
-tree.pack(pady=0)
+tree.pack(pady = (3, 5))
 
 ### Function to Edit Cell ###
 
@@ -158,22 +194,85 @@ def generate_report():
 
     ## Create Temporary Locations for Images ##
 
-    temp_image_folder_path = os.path.join(App.workspace_path, "temp")
+    temp_overview_folder_path = os.path.join(App.workspace_path, "temp/overview")
 
     os.makedirs(
-        temp_image_folder_path, 
+        temp_overview_folder_path, 
         exist_ok = True
+        )
+
+    temp_imagery_folder_path = os.path.join(App.workspace_path, "temp/imagery_base")
+
+    os.makedirs(
+        temp_imagery_folder_path, 
+        exist_ok = True
+        )
+
+    temp_terrain_folder_path = os.path.join(App.workspace_path, "temp/terrain_base")
+
+    os.makedirs(
+        temp_terrain_folder_path, 
+        exist_ok = True
+        )
+
+    ## Create Overview Map ##
+
+    map.generate_overview_map(
+        df = df,
+        output_folder = temp_overview_folder_path,
+        filename_field = Config.table_field_names_file_name, 
+        latitude_field = Config.table_field_names_latitude, 
+        longitude_field = Config.table_field_names_longitude, 
+        bearing_field = Config.table_field_names_bearing, 
+        tiles = Config.overview_map_basemap,
+        zoom = Config.overview_map_zoom, 
+        img_width = Config.overview_map_width, 
+        img_height = Config.overview_map_height, 
+        map_control_scale = Config.map_control_scale, 
+        map_zoom_control = Config.map_zoom_control, 
+        map_dragging = Config.map_dragging, 
+        icon_name = Config.icon_name, 
+        icon_size = Config.icon_size, 
+        icon_shape = Config.icon_shape, 
+        icon_border_color = Config.icon_border_color, 
+        icon_border_width = Config.icon_border_width, 
+        icon_background_color = Config.icon_background_color, 
+        icon_text_color = Config.icon_text_color
         )
 
     ## Create Individual Picture Maps ##
 
     map.generate_individual_maps(
         df = df,
-        output_folder = temp_image_folder_path,
+        output_folder = temp_imagery_folder_path,
         filename_field = Config.table_field_names_file_name, 
         latitude_field = Config.table_field_names_latitude, 
         longitude_field = Config.table_field_names_longitude, 
         bearing_field = Config.table_field_names_bearing, 
+        tiles = Config.individual_map_imagery_basemap,
+        zoom = Config.individual_map_zoom, 
+        img_width = Config.individual_map_width, 
+        img_height = Config.individual_map_height, 
+        map_control_scale = Config.map_control_scale, 
+        map_zoom_control = Config.map_zoom_control, 
+        map_dragging = Config.map_dragging, 
+        icon_name = Config.icon_name, 
+        icon_size = Config.icon_size, 
+        icon_shape = Config.icon_shape, 
+        icon_border_color = Config.icon_border_color, 
+        icon_border_width = Config.icon_border_width, 
+        icon_background_color = Config.icon_background_color, 
+        icon_text_color = Config.icon_text_color
+        )
+
+    map.generate_individual_maps(
+        df = df,
+        output_folder = temp_terrain_folder_path,
+        filename_field = Config.table_field_names_file_name, 
+        latitude_field = Config.table_field_names_latitude, 
+        longitude_field = Config.table_field_names_longitude, 
+        bearing_field = Config.table_field_names_bearing, 
+        tiles = Config.individual_map_terrain_basemap,
         zoom = Config.individual_map_zoom, 
         img_width = Config.individual_map_width, 
         img_height = Config.individual_map_height, 
@@ -200,29 +299,44 @@ def generate_report():
         image_files = image_files,
         overview_title = Config.document_overview_title,
         overview_text = helpers.read_text_file(os.path.join(App.workspace_path, Config.document_overview_text_rel_path)),
-        overview_img_path = r"C:\Users\trichman\Tyler\Tools\Development\EPA Geolocated Photograph Log Desktop GUI\Placeholder Images\Yellow0.jpg",
         overview_img_width_in = int(Config.document_overview_img_width_in),
-        individual_image_folder_path = temp_image_folder_path
+        overview_img_folder_path = temp_overview_folder_path,
+        individual_photo_img_width_in = int(Config.document_photo_img_width_in),
+        individual_imagery_folder_path = temp_imagery_folder_path,
+        individual_imagery_img_width_in = int(Config.document_imagery_img_width_in),
+        individual_terrain_folder_path = temp_terrain_folder_path,
+        individual_terrain_img_width_in = int(Config.document_terrain_img_width_in),
+        individual_header_end_text = Config.document_header_end_text,
+        individual_footer_beginning_text = Config.document_footer_beginning_text
         )
 
-### Create Buttons ###
+    ## Remove Temporate Image Folder ##
+
+    shutil.rmtree(os.path.join(App.workspace_path, "temp"))
+
+### Create Select Button ###
 
 select_button = tk.Button(
     root, 
-    text = Config.select_button_text, 
+    text = Config.select_button_text,
+    width = 56,
     command = create_image_GPS_table
 )
 select_button.pack(
-    pady = Config.select_button_pady
+    pady = (0, 0)
 )
+
+### Create Generate Report Button ###
 
 generate_button = tk.Button(
     root, 
     text = Config.generate_report_button_text, 
+    width = 20,
+    font=("Helvetica", 14, "bold"),
     command = generate_report
 )
 generate_button.pack(
-    pady = Config.generate_report_button_pady
+    pady = (20, 0)
 )
 
 ### Launch Application ###
