@@ -80,11 +80,11 @@ def generate_report(
         photoNumber += 1
         paragraph = document.add_paragraph()
         run = paragraph.add_run()
-        run.add_picture(image_files[photoNumber - 1], width=Inches(photo_img_width_in))
+        run.add_picture(image_files[photoNumber - 1], width=Inches(individual_photo_img_width_in))
         run2 = paragraph.add_run()
         run2.add_picture(os.path.join(individual_imagery_folder_path, os.path.basename(image_files[photoNumber - 1])), width=Inches(individual_imagery_img_width_in))
         run3 = paragraph.add_run()
-        run3.add_picture(os.path.join(individual_terrain_folder_path, os.path.basename(image_files[photoNumber - 1])), width=Inches(individual_terrain_img_width_in3))
+        run3.add_picture(os.path.join(individual_terrain_folder_path, os.path.basename(image_files[photoNumber - 1])), width=Inches(individual_terrain_img_width_in))
         paragraph.add_run("Photograph "+str(photoNumber)+":")
         document.add_page_break()
         

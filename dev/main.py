@@ -61,60 +61,80 @@ root = tk.Tk()
 root.title(Config.main_window_title)
 root.geometry(Config.main_window_geometry)
 root.resizable(
-    width=Config.main_window_resizable_width, 
-    height=Config.main_window_resizable_height
+    width = Config.main_window_resizable_width, 
+    height = Config.main_window_resizable_height
 )
 
 ### Create Title ###
 
 tk.Label(
     root, 
-    text = "EPA Geolocated Photograph Log", 
-    font = ("Helvetica", 16, "bold")
-    ).pack(pady=(10, 20))
+    text = Config.main_window_title, 
+    font = (
+        Config.main_window_font_type, 
+        Config.title_font_size, 
+        Config.label_font_style
+        )
+    ).pack(pady=(Config.title_pady_top, Config.title_pady_bottom))
 
 ### Create Text Entry Prompts ###
 
 tk.Label(
     root, 
-    text = "Photographer",
-    font = ("Helvetica", 11, "bold")
-    ).pack(pady = (0, 0))
+    text = Config.label_photographer_text,
+    font = (
+        Config.main_window_font_type, 
+        Config.label_font_size, 
+        Config.label_font_style
+        )
+    ).pack(pady = (Config.label_pady_top, Config.label_pady_bottom))
 photographer_entry = tk.Entry(
     root, 
-    width=40
+    width = Config.entry_width
     )
-photographer_entry.pack(pady = (3, 15))
+photographer_entry.pack(pady = (Config.entry_pady_top, Config.entry_pady_bottom))
 
 tk.Label(
     root, 
-    text = "Facility",
-    font = ("Helvetica", 11, "bold")
-    ).pack(pady = (0, 0))
+    text = Config.label_facility_text,
+    font = (
+        Config.main_window_font_type, 
+        Config.label_font_size, 
+        Config.label_font_style
+        )
+    ).pack(pady = (Config.label_pady_top, Config.label_pady_bottom))
 facility_entry = tk.Entry(
     root, 
-    width=40
+    width = Config.entry_width
     )
-facility_entry.pack(pady = (3, 15))
+facility_entry.pack(pady = (Config.entry_pady_top, Config.entry_pady_bottom))
 
 tk.Label(
     root, 
-    text="Inspection Date",
-    font=("Helvetica", 11, "bold")
-    ).pack(pady = (0, 0))
+    text = Config.label_inspection_date_text,
+    font=(
+        Config.main_window_font_type, 
+        Config.label_font_size, 
+        Config.label_font_style
+        )
+    ).pack(pady = (Config.label_pady_top, Config.label_pady_bottom))
 inspection_date_entry = tk.Entry(
     root, 
-    width=40
+    width = Config.entry_width
     )
-inspection_date_entry.pack(pady = (3, 15))
+inspection_date_entry.pack(pady = (Config.entry_pady_top, Config.entry_pady_bottom))
 
 ### Create Table ###
 
 tk.Label(
     root, 
-    text="Photographs and GPS Data",
-    font=("Helvetica", 11, "bold")
-    ).pack(pady = (0, 0))
+    text = Config.label_table_text,
+    font = (
+        Config.main_window_font_type, 
+        Config.label_font_size, 
+        Config.label_font_style
+        )
+    ).pack(pady = (Config.label_pady_top, Config.label_pady_bottom))
 
 columns = [
     Config.table_field_names_file_name, 
@@ -123,11 +143,16 @@ columns = [
     Config.table_field_names_bearing
 ]
 
-tree = ttk.Treeview(root, columns=columns, show="headings", height=10)
+tree = ttk.Treeview(
+    root, 
+    columns = columns, 
+    show = "headings", 
+    height = Config.table_row_display_count
+    )
 for col in columns:
-    tree.heading(col, text=col)
-    tree.column(col, width=100)
-tree.pack(pady = (3, 5))
+    tree.heading(col, text = col)
+    tree.column(col, width = Config.table_column_width)
+tree.pack(pady = (Config.table_pady_top, Config.table_pady_bottom))
 
 ### Function to Edit Cell ###
 
@@ -141,7 +166,7 @@ def on_double_click(event):
         root, 
         bg = Config.table_selected_cell_bg
         )
-    entry.place(x=x, y=y+tree.winfo_y(), width=width, height=height)
+    entry.place(x = x, y = y + tree.winfo_y(), width = width, height = height)
     entry.insert(0, tree.item(selected_item, "values")[column_index])
     
     def save_edit():
@@ -319,16 +344,25 @@ def generate_report():
 
     shutil.rmtree(os.path.join(App.workspace_path, "temp"))
 
+    ## Open Popup Notifying Results ##
+
+    popup = tk.Toplevel(root)
+    popup.title(Config.popup_title)
+    popup.geometry(Config.popup_geometry)
+    tk.Label(popup, text="The report has been generated.").pack(Config.popup_pady)
+    popup.transient(root)
+    popup.grab_set()
+
 ### Create Select Button ###
 
 select_button = tk.Button(
     root, 
     text = Config.select_button_text,
-    width = 56,
+    width = Config.select_button_width,
     command = create_image_GPS_table
 )
 select_button.pack(
-    pady = (0, 0)
+    pady = Config.select_button_pady
 )
 
 ### Create Generate Report Button ###
@@ -336,12 +370,16 @@ select_button.pack(
 generate_button = tk.Button(
     root, 
     text = Config.generate_report_button_text, 
-    width = 20,
-    font=("Helvetica", 14, "bold"),
+    width = Config.generate_report_button_width,
+    font = (
+        Config.main_window_font_type,
+        Config.generate_report_button_font_size,
+        Config.generate_report_button_font_style
+        ),
     command = generate_report
 )
 generate_button.pack(
-    pady = (20, 0)
+    pady = (Config.generate_report_button_pady_top, Config.generate_report_button_pady_bottom)
 )
 
 ### Launch Application ###
