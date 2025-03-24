@@ -9,10 +9,10 @@ def mean_center(latitude_list, longitude_list):
     longitude_mean = sum(longitude_list)/len(longitude_list)
     return latitude_mean, longitude_mean
 
-def create_map(center_latitude, center_longitude, zoom, img_width, img_height, map_control_scale, map_zoom_control, map_dragging):
+def create_map(center_latitude, center_longitude, tiles, zoom, img_width, img_height, map_control_scale, map_zoom_control, map_dragging):
     m = folium.Map(
         location=(center_latitude, center_longitude),
-        tiles = "Esri.WorldImagery",
+        tiles = tiles,
         zoom_start = zoom,
         width = img_width,
         height = img_height,
@@ -55,12 +55,58 @@ def save_map_to_image(m, img_path):
     #img.save(img_path)
     return
 
-def generate_individual_maps(df, output_folder, filename_field, latitude_field, longitude_field, bearing_field, zoom, img_width, img_height, map_control_scale, map_zoom_control, map_dragging, 
+def generate_overview_map(df, output_folder, filename_field, latitude_field, longitude_field, bearing_field, tiles, zoom, img_width, img_height, map_control_scale, map_zoom_control, map_dragging, 
+    icon_name, icon_size, icon_shape, icon_border_color, icon_border_width, icon_background_color, icon_text_color):
+
+    mean_latitude, mean_longitude = mean_center(
+        [float(s) for s in df[latitude_field].tolist()],
+        [float(s) for s in df[longitude_field].tolist()]
+        )
+
+    m = create_map(
+        center_latitude = mean_latitude, 
+        center_longitude = mean_longitude, 
+        tiles = tiles,
+        zoom = zoom, 
+        img_width = int(img_width),
+        img_height = int(img_height),
+        map_control_scale = map_control_scale, 
+        map_zoom_control = map_zoom_control, 
+        map_dragging = map_dragging
+        )
+
+    for index, row in df.iterrows():
+        icon = create_icon(
+            icon_name = icon_name, 
+            icon_size = icon_size, 
+            icon_shape = icon_shape, 
+            icon_border_color = icon_border_color, 
+            icon_border_width = icon_border_width, 
+            icon_background_color = icon_background_color, 
+            icon_text_color = icon_text_color, 
+            bearing = row[bearing_field]
+            )
+
+        add_icons_to_map(
+            m = m,
+            icon = icon,
+            latitude = row[latitude_field],
+            longitude = row[longitude_field]
+            )
+
+    save_map_to_image(
+        m = m, 
+        img_path = os.path.join(output_folder, "overview.jpg")
+        )
+    return
+
+def generate_individual_maps(df, output_folder, filename_field, latitude_field, longitude_field, bearing_field, tiles, zoom, img_width, img_height, map_control_scale, map_zoom_control, map_dragging, 
     icon_name, icon_size, icon_shape, icon_border_color, icon_border_width, icon_background_color, icon_text_color):
     for index, row in df.iterrows(): 
         m = create_map(
             center_latitude = row[latitude_field], 
             center_longitude = row[longitude_field], 
+            tiles = tiles,
             zoom = zoom, 
             img_width = int(img_width),
             img_height = int(img_height),

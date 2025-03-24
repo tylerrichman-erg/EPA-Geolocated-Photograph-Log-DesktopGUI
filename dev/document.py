@@ -37,9 +37,15 @@ def generate_report(
     image_files,
     overview_title,
     overview_text,
-    overview_img_path,
     overview_img_width_in,
-    individual_image_folder_path
+    overview_img_folder_path,
+    individual_photo_img_width_in,
+    individual_imagery_folder_path,
+    individual_imagery_img_width_in,
+    individual_terrain_folder_path,
+    individual_terrain_img_width_in,
+    individual_header_end_text,
+    individual_footer_beginning_text
     ):
     
     #Establish Document and open section 0 (only section)
@@ -59,42 +65,37 @@ def generate_report(
     document.add_page_break()
     
     #Overview Map Page
-    #pic0 = r"C:\Users\trichman\Tyler\Tools\Development\EPA Geolocated Photograph Log Desktop GUI\Placeholder Images\Yellow0.jpg"
-    #pic1 = r"C:\Users\trichman\Tyler\Tools\Development\EPA Geolocated Photograph Log Desktop GUI\Placeholder Images\Red1.jpg"
-    pic2 = r"C:\Users\trichman\Tyler\Tools\Development\EPA Geolocated Photograph Log Desktop GUI\Placeholder Images\Green2.jpg"
-    pic3 = r"C:\Users\trichman\Tyler\Tools\Development\EPA Geolocated Photograph Log Desktop GUI\Placeholder Images\Blue3.jpg"
     mapTitle = document.add_paragraph()
     mapTitle.alignment = 1
     runMapTitle = mapTitle.add_run(overview_title)
     runMapTitle.bold = True
     runMapImage = mapTitle.add_run()
-    runMapImage.add_picture(overview_img_path, width = Inches(overview_img_width_in))
+    runMapImage.add_picture(os.path.join(overview_img_folder_path, "overview.jpg"), width = Inches(individual_photo_img_width_in))
     runMapNote = mapTitle.add_run(overview_text)
     document.add_page_break()
     
     #Individual Image Pages
     photoNumber = 0
     for index, row in df.iterrows():
-        print(os.path.join(individual_image_folder_path, os.path.basename(image_files[photoNumber - 1])))
         photoNumber += 1
         paragraph = document.add_paragraph()
         run = paragraph.add_run()
-        run.add_picture(image_files[photoNumber - 1], width=Inches(6))
+        run.add_picture(image_files[photoNumber - 1], width=Inches(photo_img_width_in))
         run2 = paragraph.add_run()
-        run2.add_picture(os.path.join(individual_image_folder_path, os.path.basename(image_files[photoNumber - 1])), width=Inches(3))
+        run2.add_picture(os.path.join(individual_imagery_folder_path, os.path.basename(image_files[photoNumber - 1])), width=Inches(individual_imagery_img_width_in))
         run3 = paragraph.add_run()
-        run3.add_picture(pic3, width=Inches(3))
+        run3.add_picture(os.path.join(individual_terrain_folder_path, os.path.basename(image_files[photoNumber - 1])), width=Inches(individual_terrain_img_width_in3))
         paragraph.add_run("Photograph "+str(photoNumber)+":")
         document.add_page_break()
         
     #Header and Footer, Page Numbers
     header =section.header
     headertext = header.paragraphs[0]
-    headertext.text = facility + " Photo Log"
+    headertext.text = facility + " " + individual_header_end_text
     footer = section.footer
     footertext = footer.paragraphs[0]
     facilityDate = inspection_date
-    footertext.text = "Inspection Date: " + facilityDate
+    footertext.text = individual_footer_beginning_text + " " + facilityDate
     footer.add_paragraph()
     add_page_number(document.sections[0].footer.paragraphs[1].add_run())
     
