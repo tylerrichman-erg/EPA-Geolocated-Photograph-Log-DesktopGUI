@@ -9,6 +9,7 @@ from tkinter import ttk
 ### Initialize Pathways ###
 
 base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+config_module_path = os.path.join(base_dir, 'dev', 'config.py')
 document_module_path = os.path.join(base_dir, 'dev', 'document.py')
 helpers_module_path = os.path.join(base_dir, 'dev', 'helpers.py')
 image_processing_module_path = os.path.join(base_dir, 'dev', 'image_processing.py')
@@ -17,6 +18,10 @@ setup_module_path = os.path.join(base_dir, 'setup.py')
 
 
 ### Load Python Modules ###
+
+config_setup = importlib.util.spec_from_file_location("config", config_module_path)
+config = importlib.util.module_from_spec(config_setup)
+config_setup.loader.exec_module(config)
 
 document_setup = importlib.util.spec_from_file_location("document", document_module_path)
 document = importlib.util.module_from_spec(document_setup)
@@ -46,9 +51,9 @@ App.config_file_path = os.path.join(App.workspace_path, 'config.ini')
 
 ### Load Configuration ###
 
-config = setup.configparser.ConfigParser()
-config.read(App.config_file_path)
-Config = setup.Config(config)
+c = configparser.ConfigParser()
+c.read(App.config_file_path)
+Config = config.Config(c)
 
 ### Create Main Window ###
 
