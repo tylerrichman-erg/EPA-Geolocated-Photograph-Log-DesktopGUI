@@ -1,13 +1,3 @@
-######### helpers.py #########
-
-"""
-File Name: helpers.py
-Developer(s): Tyler Richman (tyler.richman@erg.com), Mark Fowler (mark.fowler@erg.com)
-Last Update: 01/21/2025
-Description: 
-"""
-
-import tkinter as tk #conda install anaconda::tk
 from tkinter import filedialog
 
 def select_images_from_filedialog():
