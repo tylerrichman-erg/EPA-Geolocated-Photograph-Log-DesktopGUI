@@ -3,19 +3,31 @@ import importlib.util
 import os
 import pandas as pd
 import shutil
-import tkinter as tk  # conda install anaconda::tk
+import tkinter as tk
 from tkinter import ttk
+import sys
+
+import docx
+from PIL import Image
+import piexif
+import folium
+import folium.plugins as plugins
+from tkinter import filedialog
 
 ### Initialize Pathways ###
 
-base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if getattr(sys, 'frozen', False):
+    base_dir = os.path.dirname(sys.executable)
+else:
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+
+#base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 config_module_path = os.path.join(base_dir, 'dev', 'config.py')
 document_module_path = os.path.join(base_dir, 'dev', 'document.py')
 helpers_module_path = os.path.join(base_dir, 'dev', 'helpers.py')
 image_processing_module_path = os.path.join(base_dir, 'dev', 'image_processing.py')
 map_module_path = os.path.join(base_dir, 'dev', 'map.py')
 setup_module_path = os.path.join(base_dir, 'setup.py')
-
 
 ### Load Python Modules ###
 
@@ -349,7 +361,7 @@ def generate_report():
     popup = tk.Toplevel(root)
     popup.title(Config.popup_title)
     popup.geometry(Config.popup_geometry)
-    tk.Label(popup, text="The report has been generated.").pack(Config.popup_pady)
+    tk.Label(popup, text="The report has been generated.").pack(pady = Config.popup_pady)
     popup.transient(root)
     popup.grab_set()
 
