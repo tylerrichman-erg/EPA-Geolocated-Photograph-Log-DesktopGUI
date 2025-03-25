@@ -1,5 +1,5 @@
-import piexif
 from PIL import Image
+import piexif
 
 def exif_to_tag(exif_dict):
     exif_tag_dict = {}
