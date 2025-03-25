@@ -1,4 +1,4 @@
-# EPA Geolocated Photograph Log Desktop GUI
+# EPA Geolocated Photograph Log Desktop GUI (Version beta 0.0.0)
 ## Libraries
 <ul>
   <li>configparser</li>
