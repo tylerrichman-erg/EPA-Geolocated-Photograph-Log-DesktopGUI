@@ -76,12 +76,14 @@ root.resizable(
     width = Config.main_window_resizable_width, 
     height = Config.main_window_resizable_height
 )
+icon_img = tk.PhotoImage(file=os.path.join(App.workspace_path, r"misc\icon.png"))
+root.iconphoto(False, icon_img)
 
 ### Create Title ###
 
 tk.Label(
     root, 
-    text = Config.main_window_title, 
+    text = Config.title_text, 
     font = (
         Config.main_window_font_type, 
         Config.title_font_size, 
@@ -178,7 +180,7 @@ def on_double_click(event):
         root, 
         bg = Config.table_selected_cell_bg
         )
-    entry.place(x = x, y = y + tree.winfo_y(), width = width, height = height)
+    entry.place(x = x + width, y = y + tree.winfo_y(), width = width, height = height)
     entry.insert(0, tree.item(selected_item, "values")[column_index])
     
     def save_edit():
@@ -287,6 +289,7 @@ def generate_report():
     map.generate_individual_maps(
         df = df,
         output_folder = temp_imagery_folder_path,
+        misc_folder = os.path.join(App.workspace_path, "misc"),
         filename_field = Config.table_field_names_file_name, 
         latitude_field = Config.table_field_names_latitude, 
         longitude_field = Config.table_field_names_longitude, 
@@ -310,6 +313,7 @@ def generate_report():
     map.generate_individual_maps(
         df = df,
         output_folder = temp_terrain_folder_path,
+        misc_folder = os.path.join(App.workspace_path, "misc"),
         filename_field = Config.table_field_names_file_name, 
         latitude_field = Config.table_field_names_latitude, 
         longitude_field = Config.table_field_names_longitude, 
@@ -334,6 +338,7 @@ def generate_report():
 
     document.generate_report(
         df = df,
+        filename_field = Config.table_field_names_file_name,
         output_file_path = output_file_path,
         photographer = photographer_entry.get(),
         facility = facility_entry.get(),

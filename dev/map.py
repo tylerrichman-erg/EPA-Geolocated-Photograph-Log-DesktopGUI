@@ -3,8 +3,11 @@ import folium.plugins as plugins
 import io
 from PIL import Image
 import os
+import shutil
 
 def mean_center(latitude_list, longitude_list):
+    latitude_list = [x for x in latitude_list if x != 0]
+    longitude_list = [x for x in longitude_list if x != 0]
     latitude_mean = sum(latitude_list)/len(latitude_list)
     longitude_mean = sum(longitude_list)/len(longitude_list)
     return latitude_mean, longitude_mean
@@ -100,42 +103,49 @@ def generate_overview_map(df, output_folder, filename_field, latitude_field, lon
         )
     return
 
-def generate_individual_maps(df, output_folder, filename_field, latitude_field, longitude_field, bearing_field, tiles, zoom, img_width, img_height, map_control_scale, map_zoom_control, map_dragging, 
-    icon_name, icon_size, icon_shape, icon_border_color, icon_border_width, icon_background_color, icon_text_color):
+def generate_individual_maps(df, output_folder, misc_folder, filename_field, latitude_field, longitude_field, bearing_field, tiles, zoom, img_width, img_height, map_control_scale, map_zoom_control, 
+    map_dragging, icon_name, icon_size, icon_shape, icon_border_color, icon_border_width, icon_background_color, icon_text_color):
     for index, row in df.iterrows(): 
-        m = create_map(
-            center_latitude = row[latitude_field], 
-            center_longitude = row[longitude_field], 
-            tiles = tiles,
-            zoom = zoom, 
-            img_width = int(img_width),
-            img_height = int(img_height),
-            map_control_scale = map_control_scale, 
-            map_zoom_control = map_zoom_control, 
-            map_dragging = map_dragging
-            )
+        if float(row[latitude_field]) != 0 or float(row[longitude_field]) != 0:
+            m = create_map(
+                center_latitude = row[latitude_field], 
+                center_longitude = row[longitude_field], 
+                tiles = tiles,
+                zoom = zoom, 
+                img_width = int(img_width),
+                img_height = int(img_height),
+                map_control_scale = map_control_scale, 
+                map_zoom_control = map_zoom_control, 
+                map_dragging = map_dragging
+                )
 
-        icon = create_icon(
-            icon_name = icon_name, 
-            icon_size = icon_size, 
-            icon_shape = icon_shape, 
-            icon_border_color = icon_border_color, 
-            icon_border_width = icon_border_width, 
-            icon_background_color = icon_background_color, 
-            icon_text_color = icon_text_color, 
-            bearing = row[bearing_field]
-            )
+            icon = create_icon(
+                icon_name = icon_name, 
+                icon_size = icon_size, 
+                icon_shape = icon_shape, 
+                icon_border_color = icon_border_color, 
+                icon_border_width = icon_border_width, 
+                icon_background_color = icon_background_color, 
+                icon_text_color = icon_text_color, 
+                bearing = row[bearing_field]
+                )
 
-        add_icons_to_map(
-            m = m,
-            icon = icon,
-            latitude = row[latitude_field],
-            longitude = row[longitude_field]
-            )
+            add_icons_to_map(
+                m = m,
+                icon = icon,
+                latitude = row[latitude_field],
+                longitude = row[longitude_field]
+                )
 
-        save_map_to_image(
-            m = m, 
-            img_path = os.path.join(output_folder, row[filename_field])
-            )
+            save_map_to_image(
+                m = m, 
+                img_path = os.path.join(output_folder, row[filename_field])
+                )
+
+        else:
+            shutil.copy2(
+                os.path.join(misc_folder, "no_map_generated_individual.png"), 
+                os.path.join(output_folder, row[filename_field])
+                )
 
     return

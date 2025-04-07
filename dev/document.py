@@ -30,6 +30,7 @@ def add_page_number(run):
 
 def generate_report(
     df,
+    filename_field,
     output_file_path,
     photographer,
     facility,
@@ -85,7 +86,7 @@ def generate_report(
         run2.add_picture(os.path.join(individual_imagery_folder_path, os.path.basename(image_files[photoNumber - 1])), width=Inches(individual_imagery_img_width_in))
         run3 = paragraph.add_run()
         run3.add_picture(os.path.join(individual_terrain_folder_path, os.path.basename(image_files[photoNumber - 1])), width=Inches(individual_terrain_img_width_in))
-        paragraph.add_run("Photograph "+str(photoNumber)+":")
+        paragraph.add_run("Photograph "+str(photoNumber)+"("+row[filename_field]+"):")
         document.add_page_break()
         
     #Header and Footer, Page Numbers

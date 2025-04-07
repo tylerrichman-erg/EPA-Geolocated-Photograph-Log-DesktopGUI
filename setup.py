@@ -20,7 +20,7 @@ if __name__ == "__main__":
     main_py_location = os.path.join(App.workspace_path, r"dev\main.py")
     icon_location = os.path.join(App.workspace_path, r"misc\icon.png") #! Change with path of new icon.
     output_exe_location = os.path.join(App.workspace_path, r"exe\dist\main.exe")
-    final_exe_location = os.path.join(App.workspace_path, r"EPA-Geolocated-Photograph-Log-DesktopGUI_0_0_0.exe")
+    final_exe_location = os.path.join(App.workspace_path, r"EPA-Geolocated-Photograph-Log-DesktopGUI_0_0_1.exe")
 
     if os.path.exists(os.path.join(App.workspace_path, "python-env")):
         shutil.rmtree(os.path.join(App.workspace_path, "python-env"))
@@ -34,7 +34,7 @@ if __name__ == "__main__":
     subprocess.run(['python', '-m', 'venv', os.path.join(App.workspace_path, "python-env")], check=True)
 
     ### All Python libraries used in tool need to be included below ###
-    subprocess.run([activate_venv_command, "&&", python_exe_location, pip_exe_location, "install", "tk"], check=True)
+    #subprocess.run([activate_venv_command, "&&", python_exe_location, pip_exe_location, "install", "tk==8.6.14"], check=True)
     subprocess.run([activate_venv_command, "&&", python_exe_location, pip_exe_location, "install", "folium"], check=True)
     subprocess.run([activate_venv_command, "&&", python_exe_location, pip_exe_location, "install", "pillow"], check=True)
     subprocess.run([activate_venv_command, "&&", python_exe_location, pip_exe_location, "install", "selenium"], check=True)
