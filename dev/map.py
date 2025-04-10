@@ -1,7 +1,7 @@
 import folium
 import folium.plugins as plugins
 import io
-from PIL import Image
+from PIL import Image, ImageOps
 import os
 import shutil
 
@@ -50,8 +50,9 @@ def add_icons_to_map(m, icon, latitude, longitude):
 def save_map_to_image(m, img_path):
     img_data = m._to_png(5)
     img = Image.open(io.BytesIO(img_data))
-    rgb_im = img.convert('RGB')
-    rgb_im.save(img_path, format='JPEG')
+    img = ImageOps.expand(img, border=5, fill='black') # Move to config file.
+    rgb_im = img.convert('RGB') # Move to config file.
+    rgb_im.save(img_path, format='JPEG') # Move to config file.
 
     #img_data = m._to_png(5)
     #img = Image.open(io.BytesIO(img_data))
