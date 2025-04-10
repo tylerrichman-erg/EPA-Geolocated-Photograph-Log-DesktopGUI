@@ -16,6 +16,7 @@ def create_map(center_latitude, center_longitude, tiles, zoom, img_width, img_he
     m = folium.Map(
         location=(center_latitude, center_longitude),
         tiles = tiles,
+        attr = "",
         zoom_start = zoom,
         width = img_width,
         height = img_height,
@@ -23,6 +24,16 @@ def create_map(center_latitude, center_longitude, tiles, zoom, img_width, img_he
         zoom_control = False, #map_zoom_control,
         dragging = map_dragging
     )
+
+    hide_attribution = """
+    <style>
+    .leaflet-control-attribution {
+        display: none !important;
+    }
+    </style>
+    """
+    
+    m.get_root().html.add_child(folium.Element(hide_attribution))
     return m
 
 def create_icon(icon_name, icon_size, icon_shape, icon_border_color, icon_border_width, icon_background_color, icon_text_color, bearing):
