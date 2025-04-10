@@ -1,10 +1,12 @@
 import configparser
+from datetime import datetime
 import importlib.util
 import os
 import pandas as pd
 import shutil
 import tkinter as tk
 from tkinter import ttk
+from tkcalendar import DateEntry
 import sys
 
 import docx
@@ -132,11 +134,24 @@ tk.Label(
         Config.label_font_style
         )
     ).pack(pady = (Config.label_pady_top, Config.label_pady_bottom))
+
+inspection_date_entry = DateEntry(
+    root,
+    width = str(int(Config.entry_width) - 2), # Move to config file
+    background = 'darkblue', # Move to config file
+    foreground = 'white', # Move to config file
+    borderwidth = 2, # Move to config file
+    date_pattern = 'yyyy-mm-dd' # Move to config file
+)
+inspection_date_entry.pack(pady=(Config.entry_pady_top, Config.entry_pady_bottom))
+
+"""
 inspection_date_entry = tk.Entry(
     root, 
     width = Config.entry_width
     )
 inspection_date_entry.pack(pady = (Config.entry_pady_top, Config.entry_pady_bottom))
+"""
 
 ### Create Table ###
 
@@ -342,7 +357,7 @@ def generate_report():
         output_file_path = output_file_path,
         photographer = photographer_entry.get(),
         facility = facility_entry.get(),
-        inspection_date = inspection_date_entry.get(),
+        inspection_date = inspection_date_entry.get_date().strftime('%Y-%m-%d'),
         image_files = image_files,
         overview_title = Config.document_overview_title,
         overview_text = helpers.read_text_file(os.path.join(App.workspace_path, Config.document_overview_text_rel_path)),

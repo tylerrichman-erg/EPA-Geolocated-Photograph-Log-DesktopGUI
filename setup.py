@@ -35,6 +35,7 @@ if __name__ == "__main__":
 
     ### All Python libraries used in tool need to be included below ###
     #subprocess.run([activate_venv_command, "&&", python_exe_location, pip_exe_location, "install", "tk==8.6.14"], check=True)
+    subprocess.run([activate_venv_command, "&&", python_exe_location, pip_exe_location, "install", "tkcalendar"], check=True)
     subprocess.run([activate_venv_command, "&&", python_exe_location, pip_exe_location, "install", "folium"], check=True)
     subprocess.run([activate_venv_command, "&&", python_exe_location, pip_exe_location, "install", "pillow"], check=True)
     subprocess.run([activate_venv_command, "&&", python_exe_location, pip_exe_location, "install", "selenium"], check=True)
