@@ -20,6 +20,7 @@ class Config:
         self.label_facility_text = config['Label Properties']['facility_text']
         self.label_inspection_date_text = config['Label Properties']['inspection_date_text']
         self.label_table_text = config['Label Properties']['table_text']
+        self.label_output_file_text = config['Label Properties']['output_file_text']
         self.label_pady_top  = config['Label Properties']['pady_top']
         self.label_pady_bottom = config['Label Properties']['pady_bottom']
 
