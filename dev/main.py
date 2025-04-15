@@ -4,6 +4,7 @@ import importlib.util
 import os
 import pandas as pd
 import shutil
+import threading
 import tkinter as tk
 from tkinter import ttk
 from tkcalendar import DateEntry
@@ -161,7 +162,6 @@ def open_file_dialog():
         root.destroy()
         sys.exit()
 
-
 def generate_report():
     """
     Function to generate a report from the image GPS data.
@@ -307,14 +307,32 @@ def generate_report():
 
         shutil.rmtree(os.path.join(App.workspace_path, "temp"))
 
+        ## Close Progress Window ##
+
+        progress_bar.stop()
+        progress_win.destroy()
+
         ## Open Popup Notifying Results ##
 
+        complete_win = tk.Toplevel(root)
+        complete_win.title("Complete")
+        complete_win.geometry("250x100")
+        complete_win.resizable(False, False)
+
+        tk.Label(complete_win, text="The report has been generated!").pack(pady=15)
+
+        # OK button to close the window
+        tk.Button(complete_win, text="OK", command=complete_win.destroy).pack()
+
+        """
         popup = tk.Toplevel(root)
         popup.title(Config.popup_title)
         popup.geometry(Config.popup_geometry)
+        popup.iconphoto(False, icon_img)
         tk.Label(popup, text="Successfull Run!").pack(pady = Config.popup_pady)
         popup.transient(root)
         popup.grab_set()
+        """
 
         ## Close the Program ##
         #sys.exit()
@@ -323,6 +341,43 @@ def generate_report():
         popupbox.error_message(e)
         root.destroy()
         sys.exit()
+
+def show_progress_window():
+    import time
+
+    global progress_win
+    global progress_bar
+
+    # Create a new top-level window
+    progress_win = tk.Toplevel(root)
+    progress_win.title("Please Wait")
+    progress_win.geometry("500x100")
+    progress_win.resizable(False, False)
+    progress_win.iconphoto(False, icon_img)
+
+    # Disable main window while progress window is open
+    progress_win.transient(root)
+    progress_win.grab_set()
+
+    # Add a label
+    tk.Label(progress_win, text="The report is being generated...").pack(pady=10)
+
+    # Add the progress bar
+    progress_bar = ttk.Progressbar(progress_win, mode='indeterminate', length=400)
+    progress_bar.pack(pady=5)
+    progress_bar.start()
+
+    # Run the task in a thread
+    def task():
+        time.sleep(10)  # Simulated task
+        print("B")
+        progress_bar.stop()
+        progress_win.destroy()
+
+    threading.Thread(target=generate_report, daemon=True).start()
+
+    
+
 
 ### Create Main Window ###
 
@@ -490,11 +545,14 @@ generate_button = tk.Button(
         Config.generate_report_button_font_size,
         Config.generate_report_button_font_style
         ),
-    command = generate_report
+    command = show_progress_window
 )
 generate_button.pack(
     pady = (Config.generate_report_button_pady_top, Config.generate_report_button_pady_bottom)
 )
+
+# Create the progress bar (initially hidden)
+progress_bar = ttk.Progressbar(root, mode='indeterminate', length=300)
 
 ### Launch Application ###
 root.mainloop()
