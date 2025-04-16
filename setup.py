@@ -18,7 +18,7 @@ if __name__ == "__main__":
     pip_exe_location = os.path.join(App.workspace_path, r"python-env\Scripts\pip.exe")
     pyinstaller_exe_location = os.path.join(App.workspace_path, r"python-env\Scripts\pyinstaller.exe")
     main_py_location = os.path.join(App.workspace_path, r"dev\main.py")
-    icon_location = os.path.join(App.workspace_path, r"misc\icon.png") #! Change with path of new icon.
+    icon_location = os.path.join(App.workspace_path, r"img\icon\icon.png") #! Change with path of new icon.
     output_exe_location = os.path.join(App.workspace_path, r"exe\dist\main.exe")
     final_exe_location = os.path.join(App.workspace_path, r"EPA-Geolocated-Photograph-Log-DesktopGUI_0_0_1.exe")
 
