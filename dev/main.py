@@ -235,7 +235,7 @@ def generate_report():
         map.generate_individual_maps(
             df = df,
             output_folder = temp_imagery_folder_path,
-            misc_folder = os.path.join(App.workspace_path, "misc"),
+            misc_folder = os.path.join(App.workspace_path, "img/doc"),
             filename_field = Config.table_field_names_file_name, 
             latitude_field = Config.table_field_names_latitude, 
             longitude_field = Config.table_field_names_longitude, 
@@ -259,7 +259,7 @@ def generate_report():
         map.generate_individual_maps(
             df = df,
             output_folder = temp_terrain_folder_path,
-            misc_folder = os.path.join(App.workspace_path, "misc"),
+            misc_folder = os.path.join(App.workspace_path, "img/doc"),
             filename_field = Config.table_field_names_file_name, 
             latitude_field = Config.table_field_names_latitude, 
             longitude_field = Config.table_field_names_longitude, 
@@ -388,7 +388,7 @@ root.resizable(
     width = Config.main_window_resizable_width, 
     height = Config.main_window_resizable_height
 )
-icon_img = tk.PhotoImage(file=os.path.join(App.workspace_path, r"misc\icon.png"))
+icon_img = tk.PhotoImage(file=os.path.join(App.workspace_path, r"img\icon\icon.png"))
 root.iconphoto(False, icon_img)
 
 ### Create Title ###
@@ -516,7 +516,7 @@ tk.Label(
 file_selection_frame = tk.Frame(root)
 file_selection_frame.pack(pady=(3, 15))
 
-folder_icon_path = os.path.join(App.workspace_path, "misc/Custom-Icon-Design-Flatastic-1-Folder.512.png")
+folder_icon_path = os.path.join(App.workspace_path, "img/icon/Custom-Icon-Design-Flatastic-1-Folder.512.png")
 folder_icon = Image.open(folder_icon_path)
 folder_icon = folder_icon.resize((14, 14))
 folder_icon = ImageTk.PhotoImage(folder_icon)
