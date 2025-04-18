@@ -22,9 +22,15 @@ from tkinter import filedialog
 if getattr(sys, 'frozen', False):
     base_dir = os.path.dirname(sys.executable)
 else:
-    base_dir = os.path.dirname(os.path.abspath(__file__))
+    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
-#base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+def get_base_path():
+    if getattr(sys, 'frozen', False):  # If bundled by PyInstaller
+        return sys._MEIPASS  # Temporary folder where PyInstaller unpacks the files
+    else:
+        return os.path.dirname(os.path.abspath(__file__))
+base_dir = get_base_path()
+
 config_module_path = os.path.join(base_dir, 'dev', 'config.py')
 document_module_path = os.path.join(base_dir, 'dev', 'document.py')
 helpers_module_path = os.path.join(base_dir, 'dev', 'helpers.py')
@@ -78,31 +84,37 @@ Config = config.Config(c)
 ### Functions to Call in Application ###
 
 def on_double_click(event):
-    """
-    Function to edit a cell in the table when double-clicked.
-    """
-
     try:
-        selected_item = tree.selection()[0]
-        column_id = tree.identify_column(event.x)
-        column_index = int(column_id[1:]) - 1
-        
-        x, y, width, height = tree.bbox(selected_item, column_index)
-        entry = tk.Entry(
-            root, 
-            bg = Config.table_selected_cell_bg
-            )
-        entry.place(x = x + width, y = y + tree.winfo_y(), width = width, height = height)
-        entry.insert(0, tree.item(selected_item, "values")[column_index])
-    
-        def save_edit():
-            values = list(tree.item(selected_item, "values"))
-            values[column_index] = entry.get()
-            tree.item(selected_item, values=values)
-            entry.destroy()
-        
-        entry.bind("<Return>", lambda event: save_edit())
+        # Identify row and column under the click
+        region = tree.identify("region", event.x, event.y)
+        if region != "cell":
+            return
+
+        row_id = tree.identify_row(event.y)
+        column = tree.identify_column(event.x)
+
+        x, y, width, height = tree.bbox(row_id, column)
+
+        # Get current value
+        item = tree.item(row_id)
+        col_index = int(column[1:]) - 1
+        current_value = item["values"][col_index]
+
+        # Create entry widget
+        entry = tk.Entry(tree)
+        entry.place(x=x, y=y, width=width, height=height)
+        entry.insert(0, current_value)
         entry.focus()
+
+        def save_edit(event):
+            new_value = entry.get()
+            values = list(tree.item(row_id)["values"])
+            values[col_index] = new_value
+            tree.item(row_id, values=values)
+            entry.destroy()
+
+        entry.bind("<Return>", save_edit)
+        entry.bind("<FocusOut>", lambda e: entry.destroy())
 
     except Exception as e:
         popupbox.error_message(e)
@@ -152,10 +164,10 @@ def open_file_dialog():
         output_file_path = helpers.select_output_report_location_from_filedialog()
         
         if output_file_path:
-            file_path_entry.config(state='normal')
+            file_path_entry.config(state = 'normal')
             file_path_entry.delete(0, tk.END)
             file_path_entry.insert(0, output_file_path)
-            file_path_entry.config(state='readonly')
+            file_path_entry.config(state = 'readonly')
 
     except Exception as e:
         popupbox.error_message(e)
@@ -183,6 +195,13 @@ def generate_report():
         df = pd.DataFrame(updated_data, columns=columns)
 
         ## Create Temporary Locations for Images ##
+        
+        temp_image_folder_path = os.path.join(App.workspace_path, "temp/images")
+
+        os.makedirs(
+            temp_image_folder_path,
+            exist_ok = True
+            )
 
         temp_overview_folder_path = os.path.join(App.workspace_path, "temp/overview")
 
@@ -203,6 +222,16 @@ def generate_report():
         os.makedirs(
             temp_terrain_folder_path, 
             exist_ok = True
+            )
+
+        ## Edit Input Images ##
+
+        photoNumber = 0
+        for index, row in df.iterrows():
+            photoNumber += 1
+            image_processing.add_border(
+                input_path = image_files[photoNumber - 1], 
+                output_path = os.path.join(temp_image_folder_path, os.path.basename(image_files[photoNumber - 1]))
             )
 
         ## Create Overview Map ##
@@ -232,10 +261,10 @@ def generate_report():
 
         ## Create Individual Picture Maps ##
 
-        map.generate_individual_maps(
+        map.generate_individual_map(
             df = df,
             output_folder = temp_imagery_folder_path,
-            misc_folder = os.path.join(App.workspace_path, "img/doc"),
+            no_img_path = os.path.join(App.workspace_path, Config.individual_no_image_path),
             filename_field = Config.table_field_names_file_name, 
             latitude_field = Config.table_field_names_latitude, 
             longitude_field = Config.table_field_names_longitude, 
@@ -256,10 +285,10 @@ def generate_report():
             icon_text_color = Config.icon_text_color
             )
 
-        map.generate_individual_maps(
+        map.generate_individual_map(
             df = df,
             output_folder = temp_terrain_folder_path,
-            misc_folder = os.path.join(App.workspace_path, "img/doc"),
+            no_img_path = os.path.join(App.workspace_path, Config.individual_no_image_path),
             filename_field = Config.table_field_names_file_name, 
             latitude_field = Config.table_field_names_latitude, 
             longitude_field = Config.table_field_names_longitude, 
@@ -294,6 +323,7 @@ def generate_report():
             overview_text = helpers.read_text_file(os.path.join(App.workspace_path, Config.document_overview_text_rel_path)),
             overview_img_width_in = int(Config.document_overview_img_width_in),
             overview_img_folder_path = temp_overview_folder_path,
+            individual_photo_folder_path = temp_image_folder_path,
             individual_photo_img_width_in = int(Config.document_photo_img_width_in),
             individual_imagery_folder_path = temp_imagery_folder_path,
             individual_imagery_img_width_in = int(Config.document_imagery_img_width_in),
@@ -315,27 +345,24 @@ def generate_report():
         ## Open Popup Notifying Results ##
 
         complete_win = tk.Toplevel(root)
-        complete_win.title("Complete")
-        complete_win.geometry("250x100")
-        complete_win.resizable(False, False)
+        complete_win.title(Config.completion_window_title)
+        complete_win.geometry(Config.completion_window_geometry)
+        complete_win.resizable(
+            Config.completion_window_resize_x, 
+            Config.completion_window_resize_y
+            )
 
-        tk.Label(complete_win, text="The report has been generated!").pack(pady=15)
+        tk.Label(
+            complete_win, 
+            text = Config.completion_window_label_text).pack(
+                pady = Config.completion_window_label_pady
+                )
 
         # OK button to close the window
-        tk.Button(complete_win, text="OK", command=complete_win.destroy).pack()
-
-        """
-        popup = tk.Toplevel(root)
-        popup.title(Config.popup_title)
-        popup.geometry(Config.popup_geometry)
-        popup.iconphoto(False, icon_img)
-        tk.Label(popup, text="Successfull Run!").pack(pady = Config.popup_pady)
-        popup.transient(root)
-        popup.grab_set()
-        """
-
-        ## Close the Program ##
-        #sys.exit()
+        tk.Button(
+            complete_win, 
+            text = Config.completion_window_button_text, 
+            command = complete_win.destroy).pack()
 
     except Exception as e:
         popupbox.error_message(e)
@@ -343,41 +370,43 @@ def generate_report():
         sys.exit()
 
 def show_progress_window():
-    import time
+    try:
+        global progress_win
+        global progress_bar
 
-    global progress_win
-    global progress_bar
+        progress_win = tk.Toplevel(root)
+        progress_win.title(Config.progress_window_title)
+        progress_win.geometry(Config.progress_window_geometry)
+        progress_win.resizable(Config.progress_window_resizable_x, Config.progress_window_resizable_y)
+        progress_win.iconphoto(False, icon_img)
 
-    # Create a new top-level window
-    progress_win = tk.Toplevel(root)
-    progress_win.title("Please Wait")
-    progress_win.geometry("500x100")
-    progress_win.resizable(False, False)
-    progress_win.iconphoto(False, icon_img)
+        progress_win.transient(root)
+        progress_win.grab_set()
 
-    # Disable main window while progress window is open
-    progress_win.transient(root)
-    progress_win.grab_set()
+        tk.Label(
+            progress_win, 
+            text = Config.progress_window_label_text).pack(
+                pady = Config.progress_window_label_pady
+                )
 
-    # Add a label
-    tk.Label(progress_win, text="The report is being generated...").pack(pady=10)
+        progress_bar = ttk.Progressbar(
+            progress_win, 
+            mode = Config.progress_window_bar_mode, 
+            length = Config.progress_window_bar_width
+            )
+        progress_bar.pack(
+            pady = Config.progress_window_bar_pady
+            )
+        progress_bar.start()
 
-    # Add the progress bar
-    progress_bar = ttk.Progressbar(progress_win, mode='indeterminate', length=400)
-    progress_bar.pack(pady=5)
-    progress_bar.start()
+        threading.Thread(
+            target = generate_report, 
+            daemon = True).start()
 
-    # Run the task in a thread
-    def task():
-        time.sleep(10)  # Simulated task
-        print("B")
-        progress_bar.stop()
-        progress_win.destroy()
-
-    threading.Thread(target=generate_report, daemon=True).start()
-
-    
-
+    except Exception as e:
+        popupbox.error_message(e)
+        root.destroy()
+        sys.exit()
 
 ### Create Main Window ###
 
@@ -388,7 +417,7 @@ root.resizable(
     width = Config.main_window_resizable_width, 
     height = Config.main_window_resizable_height
 )
-icon_img = tk.PhotoImage(file=os.path.join(App.workspace_path, r"img\icon\icon.png"))
+icon_img = tk.PhotoImage(file=os.path.join(App.workspace_path, Config.app_icon_main_path))
 root.iconphoto(False, icon_img)
 
 ### Create Title ###
@@ -416,9 +445,9 @@ tk.Label(
     ).pack(pady = (Config.label_pady_top, Config.label_pady_bottom))
 photographer_entry = tk.Entry(
     root, 
-    width = Config.entry_width
+    width = Config.text_entry_width
     )
-photographer_entry.pack(pady = (Config.entry_pady_top, Config.entry_pady_bottom))
+photographer_entry.pack(pady = (Config.text_entry_pady_top, Config.text_entry_pady_bottom))
 
 tk.Label(
     root, 
@@ -431,9 +460,9 @@ tk.Label(
     ).pack(pady = (Config.label_pady_top, Config.label_pady_bottom))
 facility_entry = tk.Entry(
     root, 
-    width = Config.entry_width
+    width = Config.text_entry_width
     )
-facility_entry.pack(pady = (Config.entry_pady_top, Config.entry_pady_bottom))
+facility_entry.pack(pady = (Config.text_entry_pady_top, Config.text_entry_pady_bottom))
 
 tk.Label(
     root, 
@@ -447,13 +476,13 @@ tk.Label(
 
 inspection_date_entry = DateEntry(
     root,
-    width = str(int(Config.entry_width) - 2), # Move to config file
-    background = 'darkblue', # Move to config file
-    foreground = 'white', # Move to config file
-    borderwidth = 2, # Move to config file
-    date_pattern = 'yyyy-mm-dd' # Move to config file
+    width = str(int(Config.text_entry_width) - 2),
+    background = Config.date_entry_background_color,
+    foreground = Config.date_entry_foreground_color,
+    borderwidth = Config.date_entry_border_width,
+    date_pattern = Config.date_entry_date_pattern
 )
-inspection_date_entry.pack(pady=(Config.entry_pady_top, Config.entry_pady_bottom))
+inspection_date_entry.pack(pady=(Config.text_entry_pady_top, Config.text_entry_pady_bottom))
 
 ### Create Table ###
 
@@ -474,8 +503,11 @@ columns = [
     Config.table_field_names_bearing
 ]
 
+frame = ttk.Frame(root, width = 400)
+frame.pack(pady = (Config.table_pady_top, Config.table_pady_bottom)) #.pack(fill="both", expand=True)
+
 tree = ttk.Treeview(
-    root, 
+    frame, 
     columns = columns, 
     show = "headings", 
     height = Config.table_row_display_count
@@ -485,7 +517,12 @@ for col in columns:
     tree.heading(col, text = col)
     tree.column(col, width = Config.table_column_width)
 
-tree.pack(pady = (Config.table_pady_top, Config.table_pady_bottom))
+#tree.pack(pady = (Config.table_pady_top, Config.table_pady_bottom))
+tree.pack(side="left", fill="both", expand=True)
+
+scrollbar = tk.Scrollbar(frame, orient="vertical", command = tree.yview, width=20)
+scrollbar.pack(side="right", fill="y")
+tree.configure(yscrollcommand = scrollbar.set)
 
 tree.bind("<Double-1>", on_double_click)
 
@@ -516,7 +553,7 @@ tk.Label(
 file_selection_frame = tk.Frame(root)
 file_selection_frame.pack(pady=(3, 15))
 
-folder_icon_path = os.path.join(App.workspace_path, "img/icon/Custom-Icon-Design-Flatastic-1-Folder.512.png")
+folder_icon_path = os.path.join(App.workspace_path, Config.app_icon_folder_path)
 folder_icon = Image.open(folder_icon_path)
 folder_icon = folder_icon.resize((14, 14))
 folder_icon = ImageTk.PhotoImage(folder_icon)
@@ -550,9 +587,6 @@ generate_button = tk.Button(
 generate_button.pack(
     pady = (Config.generate_report_button_pady_top, Config.generate_report_button_pady_bottom)
 )
-
-# Create the progress bar (initially hidden)
-progress_bar = ttk.Progressbar(root, mode='indeterminate', length=300)
 
 ### Launch Application ###
 root.mainloop()

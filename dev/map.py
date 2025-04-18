@@ -115,7 +115,7 @@ def generate_overview_map(df, output_folder, filename_field, latitude_field, lon
         )
     return
 
-def generate_individual_maps(df, output_folder, misc_folder, filename_field, latitude_field, longitude_field, bearing_field, tiles, zoom, img_width, img_height, map_control_scale, map_zoom_control, 
+def generate_individual_map(df, output_folder, no_img_path, filename_field, latitude_field, longitude_field, bearing_field, tiles, zoom, img_width, img_height, map_control_scale, map_zoom_control, 
     map_dragging, icon_name, icon_size, icon_shape, icon_border_color, icon_border_width, icon_background_color, icon_text_color):
     for index, row in df.iterrows(): 
         if float(row[latitude_field]) != 0 or float(row[longitude_field]) != 0:
@@ -156,7 +156,7 @@ def generate_individual_maps(df, output_folder, misc_folder, filename_field, lat
 
         else:
             shutil.copy2(
-                os.path.join(misc_folder, "no_map_generated_individual.png"), 
+                no_img_path, 
                 os.path.join(output_folder, row[filename_field])
                 )
 

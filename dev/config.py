@@ -7,6 +7,10 @@ class Config:
         self.main_window_resizable_height = config['Main Window Properties']['resizable_height']
         self.main_window_font_type = config['Main Window Properties']['font_type']
 
+        ### App Icon Properties ###
+        self.app_icon_main_path = config['App Icon Properties']['main_path']
+        self.app_icon_folder_path = config['App Icon Properties']['folder_path']
+
         ### Title Properties ###
         self.title_text = config['Title Properties']['text']
         self.title_font_size = config['Title Properties']['font_size']
@@ -24,10 +28,16 @@ class Config:
         self.label_pady_top  = config['Label Properties']['pady_top']
         self.label_pady_bottom = config['Label Properties']['pady_bottom']
 
-        ### Entry Properties ###
-        self.entry_width = config['Entry Properties']['width']
-        self.entry_pady_top = config['Entry Properties']['pady_top']
-        self.entry_pady_bottom = config['Entry Properties']['pady_bottom']
+        ### Text Entry Properties ###
+        self.text_entry_width = config['Text Entry Properties']['width']
+        self.text_entry_pady_top = config['Text Entry Properties']['pady_top']
+        self.text_entry_pady_bottom = config['Text Entry Properties']['pady_bottom']
+
+        ### Date Entry Properties ###
+        self.date_entry_background_color = config['Date Entry Properties']['background_color']
+        self.date_entry_foreground_color = config['Date Entry Properties']['foreground_color']
+        self.date_entry_border_width = config['Date Entry Properties']['border_width']
+        self.date_entry_date_pattern = config['Date Entry Properties']['date_pattern']
 
         ### Table Properties ###
         self.table_column_width = config['Table Properties']['column_width']
@@ -78,6 +88,7 @@ class Config:
         self.individual_map_height = config['Individual Map Properties']['height']
         self.individual_map_imagery_basemap = config['Individual Map Properties']['imagery_basemap']
         self.individual_map_terrain_basemap = config['Individual Map Properties']['terrain_basemap']
+        self.individual_no_image_path = config['Individual Map Properties']['no_image_path']
 
         ### Icon Properties ###
         self.icon_name = config['Icon Properties']['name']
@@ -102,3 +113,23 @@ class Config:
         self.popup_title = config['Pop-Up Properties']['title']
         self.popup_geometry = config['Pop-Up Properties']['geometry']
         self.popup_pady = config['Pop-Up Properties']['pady']
+
+        ### Progress Window Properties ###
+        self.progress_window_title = config['Progress Window Properties']['title']
+        self.progress_window_geometry = config['Progress Window Properties']['geometry']
+        self.progress_window_resizable_x = config['Progress Window Properties']['resizable_x']
+        self.progress_window_resizable_y = config['Progress Window Properties']['resizable_y']
+        self.progress_window_label_text = config['Progress Window Properties']['label_text']
+        self.progress_window_label_pady = config['Progress Window Properties']['label_pady']
+        self.progress_window_bar_width = config['Progress Window Properties']['bar_width']
+        self.progress_window_bar_mode = config['Progress Window Properties']['bar_mode']
+        self.progress_window_bar_pady = config['Progress Window Properties']['bar_pady']
+
+        ### Completion Window Properties ###
+        self.completion_window_title = config['Completion Window Properties']['title']
+        self.completion_window_geometry = config['Completion Window Properties']['geometry']
+        self.completion_window_resize_x = config['Completion Window Properties']['resize_x']
+        self.completion_window_resize_y = config['Completion Window Properties']['resize_y']
+        self.completion_window_label_text = config['Completion Window Properties']['label_text']
+        self.completion_window_label_pady = config['Completion Window Properties']['label_pady']
+        self.completion_window_button_text = config['Completion Window Properties']['button_text']

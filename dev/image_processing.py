@@ -1,4 +1,4 @@
-from PIL import Image
+from PIL import Image, ImageOps
 import piexif
 
 def exif_to_tag(exif_dict):
@@ -73,3 +73,10 @@ def extract_coordinates_and_bearing_from_GPS_data(inputDict):
         outputBearing = 0
 
     return outputLat, outputLon, outputBearing
+
+def add_border(input_path, output_path):
+    img = Image.open(input_path)
+    img = ImageOps.expand(img, border=20, fill='black') # Move to config file.
+    rgb_im = img.convert('RGB') # Move to config file.
+    rgb_im.save(output_path, format='JPEG')
+    return

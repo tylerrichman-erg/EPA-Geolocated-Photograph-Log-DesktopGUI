@@ -40,6 +40,7 @@ def generate_report(
     overview_text,
     overview_img_width_in,
     overview_img_folder_path,
+    individual_photo_folder_path,
     individual_photo_img_width_in,
     individual_imagery_folder_path,
     individual_imagery_img_width_in,
@@ -81,7 +82,7 @@ def generate_report(
         photoNumber += 1
         paragraph = document.add_paragraph()
         run = paragraph.add_run()
-        run.add_picture(image_files[photoNumber - 1], width=Inches(individual_photo_img_width_in))
+        run.add_picture(os.path.join(individual_photo_folder_path, os.path.basename(image_files[photoNumber - 1])), width=Inches(individual_photo_img_width_in))
         run2 = paragraph.add_run()
         run2.add_picture(os.path.join(individual_imagery_folder_path, os.path.basename(image_files[photoNumber - 1])), width=Inches(individual_imagery_img_width_in))
         run3 = paragraph.add_run()
