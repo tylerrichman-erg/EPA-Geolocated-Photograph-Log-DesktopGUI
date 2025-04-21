@@ -88,10 +88,11 @@ def generate_report(
         run3 = paragraph.add_run()
         run3.add_picture(os.path.join(individual_terrain_folder_path, os.path.basename(image_files[photoNumber - 1])), width=Inches(individual_terrain_img_width_in))
         paragraph.add_run("Photograph "+str(photoNumber)+"("+row[filename_field]+"):")
-        document.add_page_break()
+        if photoNumber < len(df):
+            document.add_page_break()
         
     #Header and Footer, Page Numbers
-    header =section.header
+    header = section.header
     headertext = header.paragraphs[0]
     headertext.text = facility + " " + individual_header_end_text
     footer = section.footer

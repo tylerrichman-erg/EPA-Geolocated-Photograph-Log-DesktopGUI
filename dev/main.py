@@ -294,7 +294,7 @@ def generate_report():
             longitude_field = Config.table_field_names_longitude, 
             bearing_field = Config.table_field_names_bearing, 
             tiles = Config.individual_map_terrain_basemap,
-            zoom = 30, #Config.individual_map_zoom, 
+            zoom = Config.individual_map_zoom, 
             img_width = Config.individual_map_width, 
             img_height = Config.individual_map_height, 
             map_control_scale = Config.map_control_scale, 
