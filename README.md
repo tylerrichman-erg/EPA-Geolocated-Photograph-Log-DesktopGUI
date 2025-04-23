@@ -1,4 +1,4 @@
-# EPA Geolocated Photograph Log Desktop GUI (beta)
+# EPA Geolocated Photograph Log Desktop GUI
 ## Overview
 This desktop tool generates a report that shows locations and geographical references of field images.
 
@@ -24,7 +24,7 @@ Alternatively, you can download a standalone exacuteable file of the application
 </ol>
 
 ## Version History
-This is a beta version of the tool.
+1.0.0 (2025/04/23): Operational version release.
 
 ## Contact
 Please email tyler.richman@erg.com for any questions or comments regarding the tool.
