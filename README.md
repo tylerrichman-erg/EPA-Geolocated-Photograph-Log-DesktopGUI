@@ -13,7 +13,7 @@ Alternatively, you can download a standalone exacuteable file of the application
 
 ## Usage
 <ol>
-  <li>Double-click on the EPA-Geolocated-Photo-Log-Desktop-GUI.exe file to launch the application.</li>
+  <li>Double-click on the executable file to launch the application.</li>
   <li>Input the photographer and facility name into the text entries.</li>
   <li>Input the inspection date into the date entry (today's date is selected by default).</li>
   <li>Click on the “Select File(s)” button. This will open a file dialog to select images for the report. The GPS data for the selected images will appear within the table. The table only displays 10 rows at a time, but the user can scroll to view additional rows not currently within the display.</li>
