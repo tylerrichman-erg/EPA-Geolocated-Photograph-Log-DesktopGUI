@@ -20,7 +20,7 @@ if __name__ == "__main__":
     main_py_location = os.path.join(App.workspace_path, r"dev\main.py")
     icon_location = os.path.join(App.workspace_path, r"img\icon\main.png") #! Change with path of new icon.
     output_exe_location = os.path.join(App.workspace_path, r"exe\dist\main.exe")
-    final_exe_location = os.path.join(App.workspace_path, r"EPA-Geolocated-Photograph-Log-DesktopGUI_1_0_0.exe")
+    final_exe_location = os.path.join(App.workspace_path, r"EPA-Geolocated-Photograph-Log-DesktopGUI_1_0_1.exe")
 
     if os.path.exists(os.path.join(App.workspace_path, "python-env")):
         shutil.rmtree(os.path.join(App.workspace_path, "python-env"))

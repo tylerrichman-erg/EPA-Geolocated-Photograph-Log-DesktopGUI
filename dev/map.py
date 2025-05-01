@@ -47,7 +47,7 @@ def folium_bounds(center_lat, center_lon, zoom, width_px, height_px):
 
 def create_map(center_latitude, center_longitude, tiles, zoom, img_width, img_height, map_control_scale, map_zoom_control, map_dragging):
     m = folium.Map(
-        location=(center_latitude, center_longitude),
+        location = (center_latitude, center_longitude),
         tiles = tiles,
         attr = "",
         zoom_start = zoom,
