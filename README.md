@@ -28,4 +28,4 @@ Alternatively, you can download a standalone exacuteable file of the application
 <ins>1.0.0 (2025/04/23)</ins>: Operational version release.
 
 ## Contact
-Please email tyler.richman@erg.com for any questions or comments regarding the tool.
+Please email tyler.richman@erg.com with any questions or comments regarding the tool.
