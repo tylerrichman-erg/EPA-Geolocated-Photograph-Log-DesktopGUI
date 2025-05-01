@@ -24,8 +24,8 @@ Alternatively, you can download a standalone exacuteable file of the application
 </ol>
 
 ## Version History
-<ul>1.0.1 (2025/05/01)</ul>: Increase extent of output document maps.<br>
-<ul>1.0.0 (2025/04/23)</ul>: Operational version release.
+<u>1.0.1 (2025/05/01)</u>: Increase extent of output document maps.<br>
+<u>1.0.0 (2025/04/23)</u>: Operational version release.
 
 ## Contact
 Please email tyler.richman@erg.com for any questions or comments regarding the tool.
