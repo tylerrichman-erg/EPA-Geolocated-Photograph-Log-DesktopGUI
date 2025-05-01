@@ -24,7 +24,7 @@ Alternatively, you can download a standalone exacuteable file of the application
 </ol>
 
 ## Version History
-1.0.1 (2025/05/01): Increase extent of output document maps.
+1.0.1 (2025/05/01): Increase extent of output document maps.<br>
 1.0.0 (2025/04/23): Operational version release.
 
 ## Contact
