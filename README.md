@@ -9,7 +9,7 @@ This desktop tool generates a report that shows locations and geographical refer
   <li>Execute setup.py with your Python installation.</li>
 </ol>
 
-Alternatively, you can download a standalone exacuteable file of the application without having to go through the installation process. Click on this <a href="https://github.com/tylerrichman-erg/EPA-Geolocated-Photograph-Log-DesktopGUI/blob/main/EPA-Geolocated-Photograph-Log-DesktopGUI_1_0_0.zip">link</a> and select the "Download raw file" button to download a zip file containing a pregenerated executable file of the application.
+Alternatively, you can download a standalone exacuteable file of the application without having to go through the installation process. Click on this <a href="https://github.com/tylerrichman-erg/EPA-Geolocated-Photograph-Log-DesktopGUI/blob/main/EPA-Geolocated-Photograph-Log-DesktopGUI_1_0_1.zip">link</a> and select the "Download raw file" button to download a zip file containing a pregenerated executable file of the application.
 
 ## Usage
 <ol>
